@@ -1,0 +1,281 @@
+
+
+
+
+In [1]:
+
+
+
+from matplotlib.font_manager import FontProperties
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+import glob, os
+import pandas as pd
+import numpy as np
+from pandas.tseries.resample import TimeGrouper
+from datetime import datetime, timedelta
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.lines import Line2D 
+from itertools import groupby
+import json
+
+array = []
+os.chdir("/Users/wshi012/Downloads/Uber/")
+
+with open("logins.json") as json_file:
+    array = json.load(json_file)
+    
+login_data = pd.DataFrame(pd.Series(array, name='DateValue')[0])
+
+year = []
+month = []
+day = []
+hour = []
+minute = []
+second = []
+login_data.index = range(len(login_data))
+login_data.columns = ["login"]
+fmt = '%Y-%m-%d %H:%M:%S'
+login_data2 = login_data["login"].map(lambda x: datetime.strptime(x, fmt))
+for i in range(0,len(login_data2)):
+    year.append(login_data2[i].year)
+    month.append(login_data2[i].month)
+    day.append(login_data2[i].day)
+    hour.append(login_data2[i].hour)
+    minute.append(login_data2[i].minute)
+    second.append(login_data2[i].second)
+print (max(year),min(year),max(month),min(month),max(day),min(day))
+print (max(hour),min(hour),max(minute),min(minute),max(second),min(second))
+
+# 1970 1970 4 1 31 1, the data is from Jan to April
+# 23 0 59 0 59 0, looks good
+
+
+login_data.index = pd.DatetimeIndex(login_data["login"])
+#login_data.index = range(len(login_data))
+login_data_15min_agg = login_data.resample('15min', how='count')
+cols = ['Counts']
+login_data_15min_agg.columns = cols
+login_data_15min_agg.plot()
+
+# Looks like each month there are a few cycles, it might be weekends
+
+
+
+
+
+
+1970 1970 4 1 31 1
+23 0 59 0 59 0
+
+
+
+
+C:\Users\wshi012\AppData\Local\Continuum\Anaconda3\lib\site-packages\ipykernel\__main__.py:49: FutureWarning: how in .resample() is deprecated
+the new syntax is .resample(...).count()
+
+
+
+Out[1]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0x888bfd0>
+
+
+
+ 
+
+
+
+In [2]:
+
+
+
+login_data_15min_agg['1970-01-01':'1970-01-31'].plot()
+# Very clear weekly cycle on Jan
+
+
+
+
+
+Out[2]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0x4d6bc50>
+
+
+
+ 
+
+
+
+In [3]:
+
+
+
+login_data_15min_agg['1970-02-01':'1970-02-28'].plot()
+# Very clear weekly cycle on Feb
+
+
+
+
+
+Out[3]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0x4a60dd8>
+
+
+
+ 
+
+
+
+In [4]:
+
+
+
+login_data_15min_agg['1970-03-01':'1970-03-31'].plot()
+#Looks like Mar 1st has an unusual spike
+
+
+
+
+
+Out[4]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0x4b18160>
+
+
+
+ 
+
+
+
+In [5]:
+
+
+
+login_data_15min_agg['1970-03-01 04:00:00':'1970-03-01 05:00:00'].plot()
+
+
+
+
+
+Out[5]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0x622d390>
+
+
+
+ 
+
+
+
+In [ ]:
+
+
+
+#Looks like April sees logic counts increase
+
+
+
+
+In [ ]:
+
+
+
+#The next graph aggregate on days
+
+
+
+
+In [10]:
+
+
+
+login_data_1month_agg = login_data.resample('1440min', how='count')
+cols = ['Counts']
+login_data_1month_agg.columns = cols
+login_data_1month_agg.plot()
+# Daily Trend
+
+
+
+
+
+
+C:\Users\wshi012\AppData\Local\Continuum\Anaconda3\lib\site-packages\ipykernel\__main__.py:1: FutureWarning: how in .resample() is deprecated
+the new syntax is .resample(...).count()
+  if __name__ == '__main__':
+
+
+
+Out[10]:
+
+<matplotlib.axes._subplots.AxesSubplot at 0xcf32080>
+
+
+
+ 
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
+
+
+
+In [ ]:
+
+
+
+ 
+
